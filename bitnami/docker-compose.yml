@@ -27,15 +27,27 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
-  # kafdrop:
-  #   image: obsidiandynamics/kafdrop
-  #   depends_on:
-  #     - kafka
-  #   ports:
-  #     - 9000:9000
-  #   environment:
-  #     KAFKA_BROKERCONNECT: kafka:9092
-  #     CMD_ARGS: "--message.format=DEFAULT --message.keyFormat=DEFAULT"
+  kafdrop:
+    # container_name: kafdrop
+    image: obsidiandynamics/kafdrop
+    depends_on:
+      - kafka
+    ports:
+      - 9000:9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka:9092
+      CMD_ARGS: "--message.format=DEFAULT --message.keyFormat=DEFAULT"
+  kafka-ui:
+    # container_name: kafka-ui
+    image: provectuslabs/kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - 8080:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: true
+    volumes:
+      - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
 volumes:
   kafka-volume:
   zookeeper-volume:
